@@ -1,0 +1,37 @@
+svelte:head
+	title Norns docs
+	meta(name="description" content="Documentation for the Norns platform: SvelteKit with Pug + Civet, the norns runtime, norns-ui and norns-tron.")
+
+section.landing-hero
+	.landing-hero-inner
+		p.landing-eyebrow Documentation
+		h1.landing-title
+			GradientText Norns
+			|  platform docs
+		p.landing-lede SvelteKit with Pug + Civet, a small opinionated runtime, a component library and a token-efficient wire format. One site, one section per package.
+		.landing-actions
+			Btn(variant="primary" icon="lucide:rocket" href="/norns/getting-started/install") Get started
+			Btn(variant="secondary" icon="lucide:github" href="https://github.com/human-synthesis/norns" target="_blank" rel="noopener") GitHub
+		pre.landing-code
+			code {quickstart}
+
+section.landing-packages
+	h2 Packages
+	.landing-grid
+		+each('data.packages as p (p.id)')
+			Card(href!="{p.href}" interactive!="{true}")
+				.landing-card-head
+					span.landing-card-name {p.name}
+					+if('p.version')
+						Badge(size="sm") v{p.version}
+					+elseif('p.kind === "private"')
+						Badge(size="sm" variant="warning") private
+				p.landing-card-desc {p.description}
+				+if('p.npm')
+					code.landing-card-npm {p.npm}
+
+<script>
+	{ data } := $props()
+
+	quickstart := 'bun create human-synthesis/norns-app my-app\ncd my-app\nbun install\nbun run dev'
+</script>

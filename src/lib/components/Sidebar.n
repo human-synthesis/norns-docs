@@ -1,0 +1,14 @@
+aside.docs-sidebar
+	nav(aria-label="Pages in this package")
+		a.sidebar-title(href!="{nav.href}") {nav.title}
+		+each('nav.pages as p (p.href)')
+			a.sidebar-link(href!="{p.href}" class!="{path === p.href ? 'sidebar-link-active' : ''}") {p.title}
+		+each('nav.sections as s (s.slug)')
+			.sidebar-section
+				a.sidebar-section-title(href!="{s.href}") {s.title}
+				+each('s.pages as p (p.href)')
+					a.sidebar-link(href!="{p.href}" class!="{path === p.href ? 'sidebar-link-active' : ''}") {p.title}
+
+<script>
+	{ nav, path = '' } := $props()
+</script>

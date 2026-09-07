@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://norns-docs.humansynthesis.ai/sitemap.xml

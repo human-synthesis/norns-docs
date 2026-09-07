@@ -1,0 +1,11 @@
+footer.site-footer
+	.site-footer-inner
+		span © {year} Human Synthesis · MIT
+		nav.site-footer-links(aria-label="Site links")
+			a(href="/llms.txt") llms.txt
+			a(href="/sitemap.xml") sitemap
+			a(href="https://humansynthesis.ai" target="_blank" rel="noopener") humansynthesis.ai
+
+<script>
+	year := new Date().getFullYear()
+</script>

@@ -1,0 +1,35 @@
+svelte:head
+	title {data.doc.title} · {data.doc.packageTitle} · Norns docs
+	meta(name="description" content!="{data.doc.description}")
+	link(rel="alternate" type="text/markdown" href!="{data.doc.mdHref}")
+
+.docs-page
+	article.docs-article
+		header.docs-article-header
+			p.docs-breadcrumb {data.doc.packageTitle}
+			h1 {data.doc.title}
+			+if('data.doc.description')
+				p.docs-lede {data.doc.description}
+		.prose-docs
+			| {@html data.doc.html}
+		footer.docs-article-footer
+			nav.docs-pager(aria-label="Previous and next page")
+				+if('data.doc.prev')
+					a.docs-pager-link.docs-pager-prev(href!="{data.doc.prev.href}")
+						span.docs-pager-label Previous
+						span.docs-pager-title {data.doc.prev.title}
+				+else
+					span
+				+if('data.doc.next')
+					a.docs-pager-link.docs-pager-next(href!="{data.doc.next.href}")
+						span.docs-pager-label Next
+						span.docs-pager-title {data.doc.next.title}
+			p.docs-meta
+				a(href!="{data.doc.mdHref}") View as Markdown
+				|  · 
+				a(href!="{data.doc.editHref}" target="_blank" rel="noopener") Edit this page
+	Toc(headings!="{data.doc.headings}")
+
+<script>
+	{ data } := $props()
+</script>

@@ -1,0 +1,11 @@
++if('headings.length > 1')
+	aside.docs-toc
+		p.docs-toc-title On this page
+		ul
+			+each('headings as h (h.id)')
+				li(class!="{'docs-toc-' + h.depth}")
+					a(href!="{'#' + h.id}") {h.text}
+
+<script>
+	{ headings = [] } := $props()
+</script>

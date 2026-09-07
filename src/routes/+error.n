@@ -1,0 +1,8 @@
+section.docs-error
+	h1 {page.status}
+	p {page.error?.message ?? 'Something went wrong'}
+	Btn(variant="secondary" icon="lucide:arrow-left" href="/") Back to the docs
+
+<script>
+	import { page } from '$app/state'
+</script>

@@ -1,0 +1,25 @@
+# Cloudflare Workers config for norns-docs — served at norns-docs.humansynthesis.ai.
+#
+# Compat flags required by the norns runtime:
+#   nodejs_als     → AsyncLocalStorage (per-request DI scope, event.locals.container)
+#   nodejs_compat  → general Node compat layer
+#
+# Every content route is prerendered into .svelte-kit/cloudflare, so the
+# worker only runs for requests that miss the asset directory (the 404 page).
+# No bindings yet; the CMS phase adds a [[d1_databases]] block here.
+
+name = "norns-docs"
+main = ".svelte-kit/cloudflare/_worker.js"
+compatibility_date = "2026-04-01"
+compatibility_flags = ["nodejs_als", "nodejs_compat"]
+
+routes = [
+	{ pattern = "norns-docs.humansynthesis.ai", custom_domain = true }
+]
+
+[assets]
+directory = ".svelte-kit/cloudflare"
+binding = "ASSETS"
+
+[observability]
+enabled = true

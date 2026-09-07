@@ -1,0 +1,52 @@
+.search
+	input.search-input(
+		type="search"
+		placeholder="Search docs…"
+		aria-label="Search docs"
+		autocomplete="off"
+		bind:value!="{q}"
+		onfocus!="{load}"
+		onblur!="{blurLater}"
+		onkeydown!="{onKey}"
+	)
+	+if('open && results.length > 0')
+		ul.search-results
+			+each('results as r (r.href)')
+				li
+					a.search-result(href!="{r.href}" onclick!="{close}")
+						span.search-result-title {r.title}
+						span.search-result-meta {r.package}{r.description ? ' — ' + r.description : ''}
+
+<script>
+	// The index is /search.json, prerendered at build time and fetched once
+	// on first focus. Matching is a plain substring test over title,
+	// description and headings; good enough for a few hundred pages.
+	q .= $state ''
+	open .= $state false
+	index .= $state null
+	timer .= null
+
+	results := $derived.by =>
+		return [] unless index? and q.trim()
+		needle := q.trim().toLowerCase()
+		index.filter((p) => p.text.includes(needle)).slice(0, 12)
+
+	load := async =>
+		open = true
+		return if index?
+		res := await fetch '/search.json'
+		index = await res.json()
+
+	onKey := (e) =>
+		if e.key === 'Escape'
+			open = false
+		else
+			open = true
+
+	close := =>
+		open = false
+
+	blurLater := =>
+		clearTimeout timer
+		timer = setTimeout close, 150
+</script>

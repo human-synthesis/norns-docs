@@ -1,0 +1,19 @@
+.min-h-screen.flex.flex-col
+	SiteHeader(packages!="{data.packages}" current!="{data.current}")
+	+if('data.nav')
+		.docs-shell
+			Sidebar(nav!="{data.nav}" path!="{path}")
+			main.docs-main
+				| {@render children?.()}
+	+else
+		main.flex-1.w-full
+			| {@render children?.()}
+	SiteFooter
+
+<script>
+	import { page } from '$app/state'
+
+	{ data, children } := $props()
+
+	path := $derived page.url.pathname
+</script>

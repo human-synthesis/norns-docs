@@ -1,0 +1,23 @@
+Header(sticky!="{true}" class="site-header")
+	+snippet('brand')
+		a.brand(href="/")
+			.logo-mark N
+			span Norns
+			span.brand-sub docs
+	+snippet('nav')
+		+each('packages as p (p.id)')
+			a.nav-link(href!="{p.href}" class!="{current === p.id ? 'nav-link-active' : ''}") {p.name}
+	+snippet('actions')
+		Search
+		a.nav-link.nav-link-icon(
+			href="https://github.com/human-synthesis/norns"
+			target="_blank"
+			rel="noopener"
+			aria-label="GitHub"
+		)
+			Icon(name="lucide:github" size="size-4")
+		ThemeToggler(size="sm")
+
+<script>
+	{ packages = [], current = '' } := $props()
+</script>
