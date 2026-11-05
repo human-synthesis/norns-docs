@@ -1,8 +1,11 @@
 import { createRequire } from 'node:module';
 import { defineConfig } from 'vite';
 import { sveltekit } from '@sveltejs/kit/vite';
+import adapter from '@sveltejs/adapter-cloudflare';
 import tailwindcss from '@tailwindcss/vite';
 import { nornsAutoImport } from '@human-synthesis/norns/auto-import';
+import { nornsConfig } from '@human-synthesis/norns/config';
+import { nornsPreprocess } from '@human-synthesis/norns/preprocess';
 import { nornsCivetPlugin, pugTailwindExtract } from '@human-synthesis/norns/vite';
 import { presetUI } from '@human-synthesis/norns-ui/auto-import';
 
@@ -34,14 +37,36 @@ export default defineConfig({
 		// `.cls.cls(` chains.
 		pugTailwindExtract(),
 		nornsCivetPlugin(),
-		// Vite-plugin half of the auto-importer (the Svelte-preprocessor half is
-		// registered in svelte.config.js). Project code (facade, repo) is always
+		// Vite-plugin half of the auto-importer, for standalone .c modules (the
+		// Svelte-preprocessor half is in the sveltekit() options below). Project code (facade, repo) is always
 		// imported explicitly.
 		nornsAutoImport({
 			components: ui.components
 		}),
 		tailwindcss(),
-		sveltekit()
+		// SvelteKit 3 takes its config here (svelte.config.js is gone).
+		sveltekit(
+			nornsConfig({
+				preprocess: [
+					...nornsPreprocess(),
+					nornsAutoImport({
+						componentDirs: ['src/lib/components', 'src/routes'],
+						components: ui.components
+					})
+				],
+				// Cloudflare Workers with static assets (see wrangler.toml). Every
+				// content route is prerendered, so the worker only answers requests
+				// that miss the asset directory.
+				adapter: adapter(),
+				prerender: {
+					entries: ['*', '/'],
+					// TODO: switch both to 'fail' once the content links have settled;
+					// a broken internal link should then break the build.
+					handleHttpError: 'warn',
+					handleMissingId: 'warn'
+				}
+			})
+		)
 	],
 	// Accept reverse-proxied Host headers in dev (norns lint: vite/allowed-hosts).
 	server: { allowedHosts: true },
